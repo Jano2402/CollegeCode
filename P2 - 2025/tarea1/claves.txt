@@ -1,0 +1,3 @@
+030c683a9f97386e073635ed62f4f9b9cca546a4  src/fecha.cpp
+0aea4ed5c9bd4e27a179628247c8f9abe8e0d07a  src/libro.cpp
+b90e11e561a52ee3d678c362901c0ddf36a9c430  src/coleccion.cpp
