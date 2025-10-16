@@ -11,9 +11,7 @@ struct rep_agGeneros {
 };
 
 TAGGeneros crearTAGGeneros(){
-  TAGGeneros agGen = new rep_agGeneros;
-  agGen = NULL;
-  return agGen;
+  return NULL;
 }
 
 void insertarGeneroTAGGeneros(TAGGeneros &arbolGeneros, int idGeneroPadre, int idGenero, const char nombreGenero[MAX_NOMBRE] ){
@@ -43,8 +41,7 @@ void insertarGeneroTAGGeneros(TAGGeneros &arbolGeneros, int idGeneroPadre, int i
 void imprimirTAGGeneros(TAGGeneros arbolGeneros) {
   static int nivel = -1; // -1 para que el primer nodo (raíz) empiece en 0
 
-  if (arbolGeneros == NULL)
-    return;
+  if (arbolGeneros == NULL) return;
 
   // Si es la primera llamada, imprimimos el título
   if (nivel == -1) {
@@ -53,8 +50,7 @@ void imprimirTAGGeneros(TAGGeneros arbolGeneros) {
   }
 
   // Imprimir indentación
-  for (int i = 0; i < nivel; i++)
-    printf("    ");
+  for (int i = 0; i < nivel; i++) printf("    ");
 
   // Imprimir el nodo actual
   printf("%d - %s\n", arbolGeneros->identificador, arbolGeneros->nombre);
@@ -68,15 +64,25 @@ void imprimirTAGGeneros(TAGGeneros arbolGeneros) {
   imprimirTAGGeneros(arbolGeneros->hermano);
 
   // Si volvimos al nivel raíz, reiniciar para futuras llamadas
-  if (nivel == 0)
-    nivel = -1;
+  if (nivel == 0) nivel = -1;
 }
 
-void liberarTAGGeneros(TAGGeneros &arbolGeneros){
+void liberarTAGGeneros(TAGGeneros &arbolGeneros) {
+  if (arbolGeneros == NULL) return;
+
+  // Guardar punteros antes de borrar
+  TAGGeneros hijo = arbolGeneros->hijo;
+  TAGGeneros hermano = arbolGeneros->hermano;
+
+  liberarTAGGeneros(hijo);     // liberar hijos
+  liberarTAGGeneros(hermano);  // liberar hermanos
+
+  delete arbolGeneros;
+  arbolGeneros = NULL;
 }
 
 bool existeGeneroTAGGeneros(TAGGeneros arbolGeneros, int idGenero){
-  return false;
+  
 }
 
 char* nombreGeneroTAGGeneros(TAGGeneros arbolGeneros, int idGenero){
