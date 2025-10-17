@@ -38,34 +38,30 @@ void insertarGeneroTAGGeneros(TAGGeneros &arbolGeneros, int idGeneroPadre, int i
   insertarGeneroTAGGeneros(arbolGeneros->hermano, idGeneroPadre, idGenero, nombreGenero);
 }
 
-void imprimirTAGGeneros(TAGGeneros arbolGeneros) {
-  static int nivel = -1; // -1 para que el primer nodo (raíz) empiece en 0
+// Usando recursión ( No se si se permite )
+void imprimirRecursivo(TAGGeneros nodo, int nivel);
 
-  if (arbolGeneros == NULL) return;
+void imprimirRecursivo(TAGGeneros nodo, int nivel) {
+    if (nodo == NULL) return;
 
-  // Si es la primera llamada, imprimimos el título
-  if (nivel == -1) {
-    printf("Árbol de géneros:\n");
-    nivel = 0;
-  }
+    // Imprimir indentación
+    for (int i = 0; i < nivel; i++) printf("    ");
 
-  // Imprimir indentación
-  for (int i = 0; i < nivel; i++) printf("    ");
+    // Imprimir nodo actual
+    printf("%d - %s\n", nodo->identificador, nodo->nombre);
 
-  // Imprimir el nodo actual
-  printf("%d - %s\n", arbolGeneros->identificador, arbolGeneros->nombre);
+    // Imprimir hijos con nivel aumentado
+    imprimirRecursivo(nodo->hijo, nivel + 1);
 
-  // Imprimir hijos (aumentando nivel)
-  nivel++;
-  imprimirTAGGeneros(arbolGeneros->hijo);
-  nivel--;
-
-  // Imprimir hermanos (mismo nivel)
-  imprimirTAGGeneros(arbolGeneros->hermano);
-
-  // Si volvimos al nivel raíz, reiniciar para futuras llamadas
-  if (nivel == 0) nivel = -1;
+    // Imprimir hermanos al mismo nivel
+    imprimirRecursivo(nodo->hermano, nivel);
 }
+
+void imprimirTAGGeneros(TAGGeneros arbolGeneros) {
+    printf("Árbol de géneros:\n");
+    imprimirRecursivo(arbolGeneros, 0);
+}
+//
 
 void liberarTAGGeneros(TAGGeneros &arbolGeneros) {
   if (arbolGeneros == NULL) return;
@@ -82,19 +78,42 @@ void liberarTAGGeneros(TAGGeneros &arbolGeneros) {
 }
 
 bool existeGeneroTAGGeneros(TAGGeneros arbolGeneros, int idGenero){
-  
+  if (arbolGeneros == NULL) return false;  // caso base
+
+  if (arbolGeneros->identificador == idGenero)
+    return true;
+
+  // Buscar en los hijos o hermanos
+  return existeGeneroTAGGeneros(arbolGeneros->hijo, idGenero) ||
+         existeGeneroTAGGeneros(arbolGeneros->hermano, idGenero);
 }
 
 char* nombreGeneroTAGGeneros(TAGGeneros arbolGeneros, int idGenero){
+  if (arbolGeneros == NULL) return NULL;
+  if (arbolGeneros->identificador == idGenero) {
+    return arbolGeneros->nombre;
+  }
+  char* resultadoHijo = nombreGeneroTAGGeneros(arbolGeneros->hijo, idGenero);
+  if (resultadoHijo != NULL) {
+    return resultadoHijo;
+  }
+  char* resultadoHer = nombreGeneroTAGGeneros(arbolGeneros->hermano, idGenero);
+  if (resultadoHer != NULL) {
+    return resultadoHer;
+  }
   return NULL;
 }
 
 nat alturaTAGGeneros(TAGGeneros arbolGeneros){
-  return 0;
+  if (arbolGeneros == NULL) return 0;
+  int hijos = alturaTAGGeneros(arbolGeneros->hijo);
+  int hermanos = alturaTAGGeneros(arbolGeneros->hermano);
+  return 1 + (hijos > hermanos ? hijos : hermanos);
 }
 
 nat cantidadTAGGeneros(TAGGeneros arbolGeneros){
-  return 0;
+  if (arbolGeneros == NULL) return 0;
+  return 1 + cantidadTAGGeneros(arbolGeneros->hijo) + cantidadTAGGeneros(arbolGeneros->hermano);
 }
 
 TAGGeneros obtenerSubarbolTAGGeneros(TAGGeneros arbolGeneros, int idGenero) {
