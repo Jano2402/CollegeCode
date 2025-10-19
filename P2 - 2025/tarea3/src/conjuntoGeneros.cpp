@@ -67,39 +67,50 @@ void liberarTConjuntoGeneros(TConjuntoGeneros &c){
 }
 
 TConjuntoGeneros unionTConjuntoGeneros(TConjuntoGeneros c1, TConjuntoGeneros c2){
-  TConjuntoGeneros unionConjuntos = crearTConjuntoGeneros(c1->cantMax);
-  for (int i = 0; i < c1->cantMax; i++) {
-    if (c1->conjuntoGeneros[i] == -1 && c2->conjuntoGeneros[i] == -1) {
-      unionConjuntos->conjuntoGeneros[i] = -1;
-    } else if (c1->conjuntoGeneros[i] == c2->conjuntoGeneros[i]) {
-      unionConjuntos->conjuntoGeneros[i] = c1->conjuntoGeneros[i];
-    } else if (c1->conjuntoGeneros[i] == -1 && c2->conjuntoGeneros[i] != -1) {
-      unionConjuntos->conjuntoGeneros[i] = c2->conjuntoGeneros[i];
-    } else {
-      unionConjuntos->conjuntoGeneros[i] = c1->conjuntoGeneros[i];
+    // Use the larger cantMax to avoid out-of-bounds access
+    int maxCant = (c1->cantMax > c2->cantMax) ? c1->cantMax : c2->cantMax;
+    TConjuntoGeneros unionConjuntos = crearTConjuntoGeneros(maxCant);
+    
+    // Copy all elements from c1
+    for (int i = 0; i < c1->cantMax; i++) {
+        if (c1->conjuntoGeneros[i] != -1) {
+            insertarTConjuntoGeneros(unionConjuntos, i);
+        }
     }
-  };
-  return unionConjuntos;
+    
+    // Copy all elements from c2
+    for (int i = 0; i < c2->cantMax; i++) {
+        if (c2->conjuntoGeneros[i] != -1) {
+            insertarTConjuntoGeneros(unionConjuntos, i);
+        }
+    }
+    
+    return unionConjuntos;
 }
 
 TConjuntoGeneros interseccionTConjuntoGeneros(TConjuntoGeneros c1, TConjuntoGeneros c2){
-  TConjuntoGeneros interseccion = crearTConjuntoGeneros(c1->cantMax);
-  for (int i = 0; i < c1->cantMax; i++) {
-    if (c1->conjuntoGeneros[i] == c2->conjuntoGeneros[i]) {
-      interseccion->conjuntoGeneros[i] = c1->conjuntoGeneros[i];
+    int maxCant = (c1->cantMax > c2->cantMax) ? c1->cantMax : c2->cantMax;
+    TConjuntoGeneros interseccion = crearTConjuntoGeneros(maxCant);
+    
+    for (int i = 0; i < maxCant; i++) {
+        if (i < c1->cantMax && i < c2->cantMax && 
+            c1->conjuntoGeneros[i] != -1 && c2->conjuntoGeneros[i] != -1) {
+            insertarTConjuntoGeneros(interseccion, i);
+        }
     }
-  }
-  return interseccion;
+    
+    return interseccion;
 }
 
 TConjuntoGeneros diferenciaTConjuntoGeneros(TConjuntoGeneros c1, TConjuntoGeneros c2){
-  TConjuntoGeneros diferencia = crearTConjuntoGeneros(c1->cantMax);
-  for (int i = 0; i < c1->cantMax; i++) {
-    if (c1->conjuntoGeneros[i] == c2->conjuntoGeneros[i]) {
-      diferencia->conjuntoGeneros[i] = -1;
-    } else {
-      diferencia->conjuntoGeneros[i] = c1->conjuntoGeneros[i];
+    TConjuntoGeneros diferencia = crearTConjuntoGeneros(c1->cantMax);
+    
+    for (int i = 0; i < c1->cantMax; i++) {
+        if (c1->conjuntoGeneros[i] != -1 && 
+            (i >= c2->cantMax || c2->conjuntoGeneros[i] == -1)) {
+            insertarTConjuntoGeneros(diferencia, i);
+        }
     }
-  }
-  return diferencia;
+    
+    return diferencia;
 }

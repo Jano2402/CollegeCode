@@ -104,11 +104,11 @@ char* nombreGeneroTAGGeneros(TAGGeneros arbolGeneros, int idGenero){
   return NULL;
 }
 
-nat alturaTAGGeneros(TAGGeneros arbolGeneros){
+nat alturaTAGGeneros(TAGGeneros arbolGeneros) {
   if (arbolGeneros == NULL) return 0;
-  int hijos = alturaTAGGeneros(arbolGeneros->hijo);
-  int hermanos = alturaTAGGeneros(arbolGeneros->hermano);
-  return 1 + (hijos > hermanos ? hijos : hermanos);
+  int alturaHijo = 1 + alturaTAGGeneros(arbolGeneros->hijo);
+  int alturaHermano = alturaTAGGeneros(arbolGeneros->hermano);
+  return (alturaHijo > alturaHermano) ? alturaHijo : alturaHermano;
 }
 
 nat cantidadTAGGeneros(TAGGeneros arbolGeneros){
@@ -117,16 +117,67 @@ nat cantidadTAGGeneros(TAGGeneros arbolGeneros){
 }
 
 TAGGeneros obtenerSubarbolTAGGeneros(TAGGeneros arbolGeneros, int idGenero) {
-  return NULL;
+  if (arbolGeneros == NULL) return NULL;
+  if (arbolGeneros->identificador == idGenero) return arbolGeneros;
+
+  TAGGeneros encontrado = obtenerSubarbolTAGGeneros(arbolGeneros->hijo, idGenero);
+  if (encontrado) return encontrado;
+
+  return obtenerSubarbolTAGGeneros(arbolGeneros->hermano, idGenero);
+}
+
+// auxiliar para obtenerConjuntoGeneros
+void agregarDescendientes(TAGGeneros nodo, TConjuntoGeneros &conjunto) {
+    if (nodo == NULL) return;
+    
+    insertarTConjuntoGeneros(conjunto, nodo->identificador);
+    
+    // Agregar todos los hijos recursivamente
+    agregarDescendientes(nodo->hijo, conjunto);
+    agregarDescendientes(nodo->hermano, conjunto);
 }
 
 TConjuntoGeneros obtenerConjuntoGeneros(TAGGeneros arbolGeneros, int idGenero) {
-  return NULL;
+    // Encontrar el nodo que contiene el género buscado
+    TAGGeneros nodoBuscado = obtenerSubarbolTAGGeneros(arbolGeneros, idGenero);
+    
+    if (nodoBuscado == NULL) {
+        return crearTConjuntoGeneros(0); // Género no encontrado
+    }
+    
+    // Calcular tamaño necesario para el conjunto
+    int maxId = obtenerMaxTAGGeneros(nodoBuscado);
+    TConjuntoGeneros resultado = crearTConjuntoGeneros(maxId + 1);
+    
+    // Agregar todos los descendientes al conjunto
+    agregarDescendientes(nodoBuscado, resultado);
+    
+    return resultado;
+}
+
+// auxiliar para ObtenerMaxTAGGeneros
+int max(int a, int b, int c) {
+    if (a >= b && a >= c) return a;
+    if (b >= a && b >= c) return b;
+    return c; // si no fueron mayores los anteriores, este es el mayor
 }
 
 int obtenerMaxTAGGeneros(TAGGeneros arbolGeneros) {
-  return 0;
+  if (arbolGeneros == NULL) return -1;
+  int maxHijo = obtenerMaxTAGGeneros(arbolGeneros->hijo);
+  int maxHer = obtenerMaxTAGGeneros(arbolGeneros->hermano);
+  return max(arbolGeneros->identificador, maxHijo, maxHer);
 }
 
 void removerGeneroTAGGeneros(TAGGeneros &arbolGeneros, int idGenero){
+  if (arbolGeneros == NULL) return;
+  if (arbolGeneros->identificador == idGenero) {
+    TAGGeneros temp = arbolGeneros->hermano;
+    liberarTAGGeneros(arbolGeneros->hijo);
+    delete arbolGeneros;
+    arbolGeneros = temp;
+    return;
+  }
+  removerGeneroTAGGeneros(arbolGeneros->hijo, idGenero);
+  removerGeneroTAGGeneros(arbolGeneros->hermano, idGenero);
 }
