@@ -25,7 +25,11 @@ void invertirPrioridadTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
 }
 
 void liberarTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
-
+  for (int i = 0; i < cp->cantidad; i++) {
+    liberarTReserva(cp->reservas[i]);
+  }
+  delete cp;
+  cp = NULL;
 }
 
 void insertarTColaDePrioridadReservas(TColaDePrioridadReservas &cp, TReserva reserva) {
@@ -33,6 +37,7 @@ void insertarTColaDePrioridadReservas(TColaDePrioridadReservas &cp, TReserva res
 }
 
 bool estaVaciaTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
+    if (cp->cantidad == 0) return true;
     return false;
 }
 
