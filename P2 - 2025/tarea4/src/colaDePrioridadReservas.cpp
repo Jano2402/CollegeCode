@@ -33,8 +33,22 @@ void liberarTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
   cp = NULL;
 }
 
-void insertarTColaDePrioridadReservas(TColaDePrioridadReservas &cp, TReserva reserva) {
+void insertarTColaDePrioridadReservas(TColaDePrioridadRespervas &cp, TReserva reserva) {
+    int i = cp->cantidad;
+    cp->reservas[i] = reserva;
+    cp->cantidad;
 
+    while (i > 0) {
+      int padre = (i - 1) / 2;
+      if (rangoTSocio(socioTReserva(cp->reservas[i])) < rangoTSocio(socioTReserva(cp->reservas[padre]))){
+        TReserva tmp = cp->reservas[i];
+        cp->reservas[i] = cp->reservas[padre];
+        cp->reservas[padre] = tmp;
+        i = padre;
+      } else {
+        break;
+      }
+    }
 }
 
 bool estaVaciaTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
