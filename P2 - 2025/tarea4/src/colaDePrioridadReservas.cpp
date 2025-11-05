@@ -28,6 +28,7 @@ void liberarTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
   for (int i = 0; i < cp->cantidad; i++) {
     liberarTReserva(cp->reservas[i]);
   }
+  delete[] cp->reservas;
   delete cp;
   cp = NULL;
 }
