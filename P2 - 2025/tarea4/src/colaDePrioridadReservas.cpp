@@ -33,7 +33,7 @@ void liberarTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
   cp = NULL;
 }
 
-void insertarTColaDePrioridadReservas(TColaDePrioridadRespervas &cp, TReserva reserva) {
+void insertarTColaDePrioridadReservas(TColaDePrioridadReservas &cp, TReserva reserva) {
     int i = cp->cantidad;
     cp->reservas[i] = reserva;
     cp->cantidad;
