@@ -102,11 +102,19 @@ void eliminarPrioritarioTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
 }
 
 bool estaTColaDePrioridadReservas(TColaDePrioridadReservas cp, int ciSocio, int isbnLibro) {
-    return false;
+    int i = 0;
+    while (ciTSocio(socioTReserva(cp->reservas[i])) != ciSocio && isbnTLibro(libroTReserva(cp->reservas[i])) != isbnLibro) {
+      i++;
+    }
+    return (i <= cp->cantidad);
 }
 
 nat prioridadTColaDePrioridadReservas(TColaDePrioridadReservas cp, int ciSocio, int isbnLibro) {
-    return 0;
+    int i = 0;
+    while (ciTSocio(socioTReserva(cp->reservas[i])) != ciSocio && isbnTLibro(libroTReserva(cp->reservas[i])) != isbnLibro) {
+      i++;
+    }
+    return rangoTSocio(socioTReserva(cp->reservas[i]));
 }
 
 TColaDePrioridadReservas copiarTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
