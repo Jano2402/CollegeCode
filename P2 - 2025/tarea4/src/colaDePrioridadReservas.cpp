@@ -63,37 +63,43 @@ TReserva prioritarioTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
 void eliminarPrioritarioTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
     if (cp == NULL || cp->cantidad == 0) return;
 
-    int hijoIzq, hijoDer, menor;
-    int n = cp->cantidad;
-
-    liberarTReserva(cp-reservas[0]);
+    liberarTReserva(cp->reservas[0]);
     cp->reservas[0] = cp->reservas[cp->cantidad - 1];
     cp->cantidad--;
 
+    hundirTColaDePrioridadReservasMinHeap(cp, 0);
+}
+
+// función auxiliar
+void hundirTColaDePrioridadReservasMinHeap(TColaDePrioridadReservas &cp, int indice) {
+    int hijoIzq, hijoDer, menor;
+    int n = cp->cantidad;
+
     if (cp->cantidad > 0) {
-        while (2 * 0 /*indice*/ + 1 < n) {
-            hijoIzq = 2 * 0 + 1;
-            hijoDer = 2 * 0 + 2;
-            menor = 0;
+      while (2 * indice + 1 < n) {
+        hijoIzq = 2 * indice + 1;
+        hijoDer = 2 * indice + 2;
+        menor = indice;
 
-            if (hijoIzq < n && socioTReserva(rangoTSocio(cp->reservas[hijoIzq])) < socioTReserva(rangoTSocio(cp->reservas[menor]))) {
-                menor = hijoIzq;
-            }
-            if (hijoDer < n && socioTReserva(rangoTSocio(cp->reservas[hijoDer])) < socioTReserva(rangoTSocio(cp->reservas[menor]))) {
-                menor = hijoDer;
-            }
-
-            if (menor != 0) {
-              TReserva tmp = cp->reservas[0];
-              cp->reservas[0] = cp->reservas[menor];
-              cp->reservas[menor] = tmp;
-              indice = menor;
-            } else {
-              break;
-            }
+        if (hijoIzq < n && rangoTSocio(socioTReserva(cp->reservas[hijoIzq])) < rangoTSocio(socioTReserva(cp->reservas[menor]))) {
+          menor = hijoIzq;
         }
+        if (hijoDer < n && rangoTSocio(socioTReserva(cp->reservas[hijoDer])) < rangoTSocio(socioTReserva(cp->reservas[menor]))) {
+          menor = hijoDer;
+        }
+
+        if (menor != indice) {
+          TReserva tmp = cp->reservas[indice];
+          cp->reservas[indice] = cp->reservas[menor];
+          cp->reservas[menor] = tmp;
+          indice = menor;
+        } else {
+          break;
+        }
+      }
     }
 }
+// termina función auxiliar
 
 bool estaTColaDePrioridadReservas(TColaDePrioridadReservas cp, int ciSocio, int isbnLibro) {
     return false;
