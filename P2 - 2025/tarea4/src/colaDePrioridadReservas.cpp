@@ -36,7 +36,7 @@ void liberarTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
 void insertarTColaDePrioridadReservas(TColaDePrioridadReservas &cp, TReserva reserva) {
     int i = cp->cantidad;
     cp->reservas[i] = reserva;
-    cp->cantidad;
+    cp->cantidad++;
 
     while (i > 0) {
       int padre = (i - 1) / 2;
@@ -57,17 +57,7 @@ bool estaVaciaTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
 }
 
 TReserva prioritarioTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
-    return NULL;
-}
-
-void eliminarPrioritarioTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
-    if (cp == NULL || cp->cantidad == 0) return;
-
-    liberarTReserva(cp->reservas[0]);
-    cp->reservas[0] = cp->reservas[cp->cantidad - 1];
-    cp->cantidad--;
-
-    hundirTColaDePrioridadReservasMinHeap(cp, 0);
+    return cp->reservas[0];
 }
 
 // función auxiliar
@@ -100,6 +90,16 @@ void hundirTColaDePrioridadReservasMinHeap(TColaDePrioridadReservas &cp, int ind
     }
 }
 // termina función auxiliar
+
+void eliminarPrioritarioTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
+    if (cp == NULL || cp->cantidad == 0) return;
+
+    liberarTReserva(cp->reservas[0]);
+    cp->reservas[0] = cp->reservas[cp->cantidad - 1];
+    cp->cantidad--;
+
+    hundirTColaDePrioridadReservasMinHeap(cp, 0);
+}
 
 bool estaTColaDePrioridadReservas(TColaDePrioridadReservas cp, int ciSocio, int isbnLibro) {
     return false;
