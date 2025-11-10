@@ -20,8 +20,88 @@ TColaDePrioridadReservas crearTColaDePrioridadReservas(nat N) {
     return cola;
 }
 
+// Detecta si el heap actual es min-heap comparando raíz e hijo
+bool esMinHeap(TColaDePrioridadReservas cp) {
+    if (cp->cantidad <= 1) return true; // por defecto consideramos min
+    int hijo = 1; // primer hijo
+    return rangoTSocio(socioTReserva(cp->reservas[0])) < rangoTSocio(socioTReserva(cp->reservas[hijo]));
+}
+
+// Función auxiliar
+void hundirTColaDePrioridadReservasMaxHeap(TColaDePrioridadReservas &cp, int indice) {
+    int hijoIzq, hijoDer, mayor;
+    int n = cp->cantidad;
+
+    while (2 * indice + 1 < n) {
+        hijoIzq = 2 * indice + 1;
+        hijoDer = 2 * indice + 2;
+        mayor = indice;
+
+        if (hijoIzq < n && rangoTSocio(socioTReserva(cp->reservas[hijoIzq])) > rangoTSocio(socioTReserva(cp->reservas[mayor]))) {
+            mayor = hijoIzq;
+        }
+        if (hijoDer < n && rangoTSocio(socioTReserva(cp->reservas[hijoDer])) > rangoTSocio(socioTReserva(cp->reservas[mayor]))) {
+            mayor = hijoDer;
+        }
+
+        if (mayor != indice) {
+            TReserva tmp = cp->reservas[indice];
+            cp->reservas[indice] = cp->reservas[mayor];
+            cp->reservas[mayor] = tmp;
+            indice = mayor;
+        } else {
+            break;
+        }
+    }
+}
+// Fin función auxiliar
+
+// función auxiliar
+void hundirTColaDePrioridadReservasMinHeap(TColaDePrioridadReservas &cp, int indice) {
+    int hijoIzq, hijoDer, menor;
+    int n = cp->cantidad;
+
+    if (cp->cantidad > 0) {
+      while (2 * indice + 1 < n) {
+        hijoIzq = 2 * indice + 1;
+        hijoDer = 2 * indice + 2;
+        menor = indice;
+
+        if (hijoIzq < n && rangoTSocio(socioTReserva(cp->reservas[hijoIzq])) < rangoTSocio(socioTReserva(cp->reservas[menor]))) {
+          menor = hijoIzq;
+        }
+        if (hijoDer < n && rangoTSocio(socioTReserva(cp->reservas[hijoDer])) < rangoTSocio(socioTReserva(cp->reservas[menor]))) {
+          menor = hijoDer;
+        }
+
+        if (menor != indice) {
+          TReserva tmp = cp->reservas[indice];
+          cp->reservas[indice] = cp->reservas[menor];
+          cp->reservas[menor] = tmp;
+          indice = menor;
+        } else {
+          break;
+        }
+      }
+    }
+}
+// termina función auxiliar
+
 void invertirPrioridadTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
-    
+    if (cp == NULL || cp->cantidad <= 1) return;
+
+    bool esMin = esMinHeap(cp);
+
+    // Reconstruye el heap según el tipo opuesto
+    for (int i = (cp->cantidad / 2) - 1; i >= 0; i--) {
+        if (esMin) {
+            // convertir de min a max
+            hundirTColaDePrioridadReservasMaxHeap(cp, i);
+        } else {
+            // convertir de max a min
+            hundirTColaDePrioridadReservasMinHeap(cp, i);
+        }
+    }
 }
 
 void liberarTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
@@ -60,37 +140,6 @@ TReserva prioritarioTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
     return cp->reservas[0];
 }
 
-// función auxiliar
-void hundirTColaDePrioridadReservasMinHeap(TColaDePrioridadReservas &cp, int indice) {
-    int hijoIzq, hijoDer, menor;
-    int n = cp->cantidad;
-
-    if (cp->cantidad > 0) {
-      while (2 * indice + 1 < n) {
-        hijoIzq = 2 * indice + 1;
-        hijoDer = 2 * indice + 2;
-        menor = indice;
-
-        if (hijoIzq < n && rangoTSocio(socioTReserva(cp->reservas[hijoIzq])) < rangoTSocio(socioTReserva(cp->reservas[menor]))) {
-          menor = hijoIzq;
-        }
-        if (hijoDer < n && rangoTSocio(socioTReserva(cp->reservas[hijoDer])) < rangoTSocio(socioTReserva(cp->reservas[menor]))) {
-          menor = hijoDer;
-        }
-
-        if (menor != indice) {
-          TReserva tmp = cp->reservas[indice];
-          cp->reservas[indice] = cp->reservas[menor];
-          cp->reservas[menor] = tmp;
-          indice = menor;
-        } else {
-          break;
-        }
-      }
-    }
-}
-// termina función auxiliar
-
 void eliminarPrioritarioTColaDePrioridadReservas(TColaDePrioridadReservas &cp) {
     if (cp == NULL || cp->cantidad == 0) return;
 
@@ -126,11 +175,17 @@ nat prioridadTColaDePrioridadReservas(TColaDePrioridadReservas cp, int ciSocio, 
 }
 
 TColaDePrioridadReservas copiarTColaDePrioridadReservas(TColaDePrioridadReservas cp) {
-    return NULL;
+    TColaDePrioridadReservas copia = crearTColaDePrioridadReservas(cp->cantidad);
+    copia->cantidad = cp->cantidad;
+    for (int i = 0; i < cp->cantidad; i++) {
+      copia->reservas[i] = copiarTReserva(cp->reservas[i]);
+    }
+    return copia;
 }
 
 void imprimirTColaDePrioridad(TColaDePrioridadReservas cp) {
-
+    if (cp == NULL || cp->cantidad == 0) return;
+    for (int i = 0; i < cp->cantidad; i++) {
+      imprimirTReserva(cp->reservas[i]);
+    }
 }
-
-

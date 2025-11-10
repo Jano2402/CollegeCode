@@ -1,7 +1,0 @@
-1,4c1
-< 1>Socio de ci 12345678 creado exitosamente.
-< 2>El socio tiene rango 2.
-< 3>Se ejecutó 'liberarTSocio' exitosamente.
-< 4>Fin.
----
-> timeout: failed to run command ‘valgrind’: No such file or directory
