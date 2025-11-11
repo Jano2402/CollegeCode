@@ -14,7 +14,10 @@ TReserva crearTReserva(TSocio socio, TLibro libro){
 }
 
 void imprimirTReserva(TReserva reserva){
-  printf("%s %s %s %s %s.\n","Reserva de libro", tituloTLibro(reserva->libro), "por", nombreTSocio(reserva->socio), apellidoTSocio(reserva->socio));
+  printf("Reserva de libro %s por %s %s.\n", 
+       tituloTLibro(reserva->libro), 
+       nombreTSocio(reserva->socio), 
+       apellidoTSocio(reserva->socio));
 }
 
 void liberarTReserva(TReserva &reserva){
