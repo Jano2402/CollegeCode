@@ -1,7 +1,7 @@
 crearTabla 10 5
 liberarTabla
 
-crearTabla 10 5
+crearTabla 10 10
 crearSocio 12345678 Jim Dear 10 03 2004 2
 crearFecha 01/01/1966
 crearLibro 111111111 "Todos los fuegos el fuego" "Julio" "Cortázar" "Ocho cuentos que combinan lo cotidiano con lo fantástico" 1
